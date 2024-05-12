@@ -46,6 +46,36 @@ async function run() {
       const result = await jobCollection.insertOne(jobData)
       res.send(result);
     });
+    // specific email user
+    app.get('/jobs/:email',async(req,res)=>{
+      const email=req.params.email;
+      const query = {user_email : email}
+      const result = await jobCollection.find(query).toArray();
+      res.send(result);
+    })
+
+    // delete jobs
+    app.delete('/jobs/:id',async(req,res)=>{
+      const id = req.params.id;
+      const query = {_id : new ObjectId(id)}
+      const result = await jobCollection.deleteOne(query);
+      res.send(result);
+    });
+    // update
+    app.put("/job/:id",async(req,res)=>{
+      const id = req.params.id;
+      const jobData = req.body;
+      const query = {_id:new ObjectId(id)};
+      const options = {upsert:true};
+      const updateDoc ={
+        $set:{
+          ...jobData
+        },
+      }
+      const result = await jobCollection.updateOne(query,updateDoc, options)
+      res.send(result);
+    });
+
 
 
 
