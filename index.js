@@ -34,7 +34,20 @@ const client = new MongoClient(uri, {
 async function run() {
   try {
     const jobCollection = client.db('jobquesthub').collection('jobs');
-
+    const bidCollection = client.db('jobquesthub').collection('bids');
+// save bid data
+app.post('/bid',async(req,res) => {
+  const bidData = req.body;
+  const result = await bidCollection.insertOne(bidData)
+  res.send(result)
+})
+// get bid data
+app.get('/bids/:email' , async(req,res) => {
+  const email = req.params.email;
+  const query ={email}
+  const result = await bidCollection.find(query).toArray()
+  res.send(result)
+})
     // get all jobs data from db
     app.get('/jobs',async(req,res)=> {
         const result = await jobCollection.find().toArray();
