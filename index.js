@@ -1,6 +1,7 @@
 const express =require('express');
 const cors = require('cors');
 const jwt =require('jsonwebtoken');
+const cookieParser=require('cookie-parser');
 const app = express();
 const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 require('dotenv').config();
@@ -38,12 +39,18 @@ async function run() {
     const bidCollection = client.db('jobquesthub').collection('bids');
 
     // jwt implement
-    app.post('jwt',async(req,res)=> {
+    app.post('/jwt',async(req,res)=> {
       const user =req.body;
+      console.log(user);
       const token = jwt.sign(user,process.env.ACCESS_TOKEN_SECRET,{
         expiresIn:'365d'
       })
-      res.send({token})
+      res.cookie('token',token,{
+httpOnly:true,
+secure:process.env.NODE_ENV === 'production',
+sameSite:process.env.NODE_ENV === 'production'?'none':'strict',
+      })
+      .send({success:true})
     })
 
 // save bid data
