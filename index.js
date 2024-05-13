@@ -1,5 +1,6 @@
 const express =require('express');
 const cors = require('cors');
+const jwt =require('jsonwebtoken');
 const app = express();
 const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 require('dotenv').config();
@@ -35,6 +36,16 @@ async function run() {
   try {
     const jobCollection = client.db('jobquesthub').collection('jobs');
     const bidCollection = client.db('jobquesthub').collection('bids');
+
+    // jwt implement
+    app.post('jwt',async(req,res)=> {
+      const user =req.body;
+      const token = jwt.sign(user,process.env.ACCESS_TOKEN_SECRET,{
+        expiresIn:'365d'
+      })
+      res.send({token})
+    })
+
 // save bid data
 app.post('/bid',async(req,res) => {
   const bidData = req.body;
