@@ -62,14 +62,28 @@ app.post('/bid',async(req,res) => {
 // get bid data
 app.get('/bids/:email' , async(req,res) => {
   const email = req.params.email;
+  const filter = req.query.filter;
   const query ={email}
+console.log(query);
+  // let query = {}
+  if (filter){category=filter}
+
+ 
   const result = await bidCollection.find(query).toArray()
   res.send(result)
 })
     // get all jobs data from db
     app.get('/jobs',async(req,res)=> {
-        const result = await jobCollection.find().toArray();
+      const search = req.query.search
+        
+       if (search) {
+        query = {
+          job_title:{$regex:search,$options:'i'}
+          }
+       }
+       const result = await jobCollection.find().toArray();
         res.send(result);
+
     })
     // post all jobs from client
     app.post('/job',async(req,res)=> {
