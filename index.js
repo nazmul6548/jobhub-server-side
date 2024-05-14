@@ -7,15 +7,15 @@ const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 require('dotenv').config();
 const port = process.env.PORT || 5000
 
-// const corsOptions = {
-//     // origin:['http://localhost:5176', 'https://localhost:5177'],
-//     Credential:true,
-//     optionSuccessStatus:200,
-// }
+const corsOptions = {
+    origin:['http://localhost:5173', 'https://localhost:5177'],
+    Credential:true,
+    optionSuccessStatus:200,
+}
 
 app.use(cors(corsOptions))
 app.use(express.json())
-
+// app.use(cookieParser())
 
 
 
@@ -39,19 +39,19 @@ async function run() {
     const bidCollection = client.db('jobquesthub').collection('bids');
 
     // jwt implement
-    app.post('/jwt',async(req,res)=> {
-      const user =req.body;
-      console.log(user);
-      const token = jwt.sign(user,process.env.ACCESS_TOKEN_SECRET,{
-        expiresIn:'365d'
-      })
-      res.cookie('token',token,{
-httpOnly:true,
-secure:process.env.NODE_ENV === 'production',
-sameSite:process.env.NODE_ENV === 'production'?'none':'strict',
-      })
-      .send({success:true})
-    })
+    // app.post('/jwt', async (req, res) => {
+    //   const email = req.body
+    //   const token = jwt.sign(email, process.env.ACCESS_TOKEN_SECRET, {
+    //     expiresIn: '365d',
+    //   })
+    //   res
+    //     .cookie('token', token, {
+    //       httpOnly: true,
+    //       secure: process.env.NODE_ENV === 'production',
+    //       sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'strict',
+    //     })
+    //     .send({ success: true })
+    // })
 
 // save bid data
 app.post('/bid',async(req,res) => {
